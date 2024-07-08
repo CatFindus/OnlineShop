@@ -1,0 +1,16 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    container_name: postgres_shop
+    image: postgres:16
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=online_shop
+      - POSTGRES_DB=shop
+    ports:
+      - "9000:5432"
+    volumes:
+      - D:\pg\online_shop:/var/lib/postgresql/data
