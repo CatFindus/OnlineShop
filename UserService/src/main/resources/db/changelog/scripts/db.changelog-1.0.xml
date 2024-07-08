@@ -13,6 +13,9 @@
             <column name="username" type="varchar(128)">
                 <constraints nullable="false" unique="true"/>
             </column>
+            <column name="email" type="varchar(128)">
+                <constraints nullable="false" unique="true"/>
+            </column>
             <column name="password_hash" type="varchar(128)">
                 <constraints nullable="false"/>
             </column>
@@ -34,6 +37,8 @@
                 <constraints unique="true" nullable="false"/>
             </column>
             <column name="description" type="text"/>
+            <column name="created_at" type="timestamp"/>
+            <column name="updated_at" type="timestamp"/>
         </createTable>
     </changeSet>
     <changeSet id="3" author="apuchinec">

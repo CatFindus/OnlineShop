@@ -2,6 +2,7 @@
 spring:
   application:
     name: user-service
+
   liquibase:
     change-log: classpath:db/changelog/changelog.xml
     url: jdbc:postgresql://localhost:9000/shop
@@ -10,10 +11,12 @@ spring:
     enabled: true
     default-schema: user_management
     liquibase-schema: user_management_migrations
+
   datasource:
     url: jdbc:postgresql://localhost:9000/shop
     username: admin
     password: online_shop
+
   jpa:
     show-sql: true
     hibernate:
@@ -23,10 +26,17 @@ spring:
         default_schema: ${spring.liquibase.liquibase-schema}
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
+logging:
+  level:
+    root: info
+    ru.puchinets.userservice.controller.rest: trace
+    ru.puchinets.userservice.service.impl: trace
+  file:
+    name: user-service.log
+    path: /logs/user-service/
 
-
-#application:
-#  user-service:
-#    url: ${USER_SERVICE_URL:http://localhost:9000}
 server:
   port: 9001
+springdoc:
+  swagger-ui:
+    path: /swagger/swagger-ui.html

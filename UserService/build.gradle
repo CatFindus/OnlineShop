@@ -23,10 +23,6 @@ repositories {
     mavenCentral()
 }
 
-ext {
-    set('snippetsDir', file("build/generated-snippets"))
-}
-
 dependencies {
     //db
     implementation 'org.postgresql:postgresql'
