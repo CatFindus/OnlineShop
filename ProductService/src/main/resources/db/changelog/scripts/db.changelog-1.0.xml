@@ -33,6 +33,12 @@
             <column name="quantity_in_stock" type="int" defaultValue="0">
                 <constraints nullable="false"/>
             </column>
+            <column name="quantity_in_reserve" type="int" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="quantity_to_ship" type="int" defaultValue="0">
+                <constraints nullable="false"/>
+            </column>
             <column name="category_id" type="bigint">
                 <constraints nullable="false"
                              foreignKeyName="fk_category_id"

@@ -22,6 +22,10 @@ public class Product extends BaseEntity {
     private BigDecimal price;
     @Column(name = "quantity_in_stock")
     private Integer quantityInStock;
+    @Column(name = "quantity_in_reserve")
+    private Integer quantityInReserve;
+    @Column(name = "quantity_to_ship")
+    private Integer quantityToShip;
     @Column(name = "category_id")
     private Long categoryId;
 }

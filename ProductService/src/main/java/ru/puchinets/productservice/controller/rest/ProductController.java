@@ -12,8 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.puchinets.productservice.model.dto.request.ChangeProductDto;
 import ru.puchinets.productservice.model.dto.request.ProductRequest;
 import ru.puchinets.productservice.model.dto.response.ProductResponse;
+import ru.puchinets.productservice.model.dto.response.ProductStatusDto;
 import ru.puchinets.productservice.service.ProductService;
 
 @RequiredArgsConstructor
@@ -53,7 +55,7 @@ public class ProductController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @Operation(summary = "Update a product", description = "Update a product and return the created object")
+    @Operation(summary = "Update a product", description = "Update a product and return the updated object")
     @ApiResponse(responseCode = "200", description = "Product updated successfully",
             content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ProductResponse.class)))
@@ -77,5 +79,18 @@ public class ProductController {
         boolean deleted = productService.delete(id);
         if (deleted) return ResponseEntity.noContent().build();
         else return ResponseEntity.notFound().build();
+    }
+
+    @Operation(summary = "The operation of changing the remaining goods", description = "Change quantity a product by ID and command object")
+    @ApiResponse(responseCode = "200", description = "Result of change quantity",
+            content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ProductStatusDto.class)))
+    @PatchMapping("/{id}")
+    public ResponseEntity<ProductStatusDto> changeQuantityProductById(@Parameter(description = "ID of product")
+                                                                      @PathVariable("id") Long id,
+                                                                      @Parameter(description = "Product change object", required = true)
+                                                                      @RequestBody ChangeProductDto command) {
+        ProductStatusDto dto = productService.changeQuantityProductById(id, command);
+        return ResponseEntity.ok(dto);
     }
 }

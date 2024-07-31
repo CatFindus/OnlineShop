@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_table_order_statuses" author="apuchinec">
+        <createTable tableName="order_statuses" schemaName="order_management">
+            <column autoIncrement="true" name="id" type="smallint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="varchar(256)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="description" type="varchar(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="next_status_id" type="smallint">
+                <constraints nullable="true"/>
+            </column>
+            <column name="previous_status_id" type="smallint">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="insert_data_order_statuses" author="apuchinec">
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="1"/>
+            <column name="name" value="New"/>
+            <column name="description" value="Order has been created and is waiting for processing"/>
+            <column name="next_status_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="2"/>
+            <column name="name" value="Pending"/>
+            <column name="description" value="Order is pending and waiting for confirmation"/>
+            <column name="next_status_id" valueNumeric="3"/>
+            <column name="previous_status_id" valueNumeric="1"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="3"/>
+            <column name="name" value="Confirmed"/>
+            <column name="description" value="Payment has been confirmed and order is being prepared"/>
+            <column name="next_status_id" valueNumeric="4"/>
+            <column name="previous_status_id" valueNumeric="2"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="4"/>
+            <column name="name" value="Processing"/>
+            <column name="description" value="Order is currently being processed and packed"/>
+            <column name="next_status_id" valueNumeric="5"/>
+            <column name="previous_status_id" valueNumeric="3"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="5"/>
+            <column name="name" value="Completed"/>
+            <column name="description" value="Order has been successfully completed"/>
+            <column name="previous_status_id" valueNumeric="4"/>
+            <column name="next_status_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="6"/>
+            <column name="name" value="Canceled"/>
+            <column name="description" value="Order has been cancelled"/>
+            <column name="previous_status_id" valueNumeric="5"/>
+            <column name="next_status_id" valueNumeric="7"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="7"/>
+            <column name="name" value="Refunded"/>
+            <column name="description" value="Order has been refunded"/>
+            <column name="next_status_id" valueNumeric="8"/>
+            <column name="previous_status_id" valueNumeric="6"/>
+        </insert>
+        <insert tableName="order_statuses">
+            <column name="id" valueNumeric="8"/>
+            <column name="name" value="Failed"/>
+            <column name="description" value="Order processing failed due to some error"/>
+            <column name="previous_status_id" valueNumeric="7"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
