@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,9 @@ import ru.puchinets.userservice.model.dto.response.RoleResponse;
 import ru.puchinets.userservice.model.dto.response.UserResponse;
 import ru.puchinets.userservice.model.entity.Role;
 import ru.puchinets.userservice.service.RoleService;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static ru.puchinets.userservice.Constants.PAGINATION_EXAMPLE;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,7 +43,8 @@ public class RoleController {
 
     @Operation(summary = "Retrieve a paginated list of all roles")
     @GetMapping
-    public ResponseEntity<Page<RoleResponse>> getAll(@Parameter(description = "Pagination and sorting parameters") Pageable pageable) {
+    public ResponseEntity<Page<RoleResponse>> getAll(@Parameter(description = "Pagination and sorting parameters", example = PAGINATION_EXAMPLE)
+                                                     @PageableDefault(sort = "id", direction = ASC) Pageable pageable) {
         var rolesPage = roleService.getAll(pageable);
         return ResponseEntity.ok(rolesPage);
     }

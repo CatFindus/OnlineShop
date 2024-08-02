@@ -24,4 +24,8 @@ public interface UserService {
     Optional<UserResponse> update(Long id, UserRequest request);
 
     boolean delete(Long id);
+
+    Optional<UserResponse> addRoleToUser(Long userId, Integer roleId);
+
+    Optional<UserResponse> replaceRoleFormUser(Long userId, Integer roleId);
 }

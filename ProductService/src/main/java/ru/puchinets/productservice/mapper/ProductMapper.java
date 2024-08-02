@@ -1,6 +1,7 @@
 package ru.puchinets.productservice.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import ru.puchinets.productservice.model.dto.request.ProductRequest;
 import ru.puchinets.productservice.model.dto.response.ProductResponse;
 import ru.puchinets.productservice.model.entity.Product;
@@ -9,7 +10,11 @@ import ru.puchinets.productservice.model.entity.Product;
 public interface ProductMapper extends BaseMapper<ProductRequest, ProductResponse, Product> {
 
     ProductResponse modelToDto(Product entity);
+
+    @Mapping(target = "quantityInReserve", constant = "0")
+    @Mapping(target = "quantityToShip", constant = "0")
     Product dtoToModel(ProductRequest request);
+
     default Product update(Product product, ProductRequest request) {
         if (request==null) return product;
         if (request.getCategoryId()!=null)

@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,8 @@ import ru.puchinets.productservice.model.dto.request.ProductRequest;
 import ru.puchinets.productservice.model.dto.response.ProductResponse;
 import ru.puchinets.productservice.model.dto.response.ProductStatusDto;
 import ru.puchinets.productservice.service.ProductService;
+
+import static ru.puchinets.productservice.Constants.PAGINATION_EXAMPLE;
 
 @RequiredArgsConstructor
 @RestController
@@ -39,8 +43,9 @@ public class ProductController {
 
     @Operation(summary = "Get all products", description = "Returns a paginated list of all products] available")
     @GetMapping
-    public ResponseEntity<Page<ProductResponse>> getAllProducts(@Parameter(description = "Pagination parameters")
-                                                                @RequestBody Pageable pageable) {
+    public ResponseEntity<Page<ProductResponse>> getAllProducts(@Parameter(name = "pagination parameter",
+                                                                description = "Pagination and sorting parameters", example = PAGINATION_EXAMPLE)
+                                                                @PageableDefault(sort = "id", direction = Sort.Direction.ASC) Pageable pageable) {
         return ResponseEntity.ok(productService.getAll(pageable));
     }
 
@@ -63,7 +68,6 @@ public class ProductController {
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponse> updateProduct(@Parameter(description = "ID of product", required = true)
                                                          @PathVariable("id") Long id,
-                                                         @Parameter(description = "Product request object", required = true)
                                                          @RequestBody ProductRequest request) {
         return productService.update(id, request)
                 .map(ResponseEntity::ok)

@@ -1,16 +1,16 @@
 package ru.puchinets.userservice.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@EqualsAndHashCode(of = "name")
+@EqualsAndHashCode(of = "name", callSuper = false)
 @Table(name = "roles", schema = "user_management")
 public class Role extends BaseEntity {
     @Id
@@ -21,4 +21,7 @@ public class Role extends BaseEntity {
     private String name;
     @Column(name = "description")
     private String description;
+    @ManyToMany(mappedBy = "roles")
+    @ToString.Exclude
+    private List<User> users = new ArrayList<>();
 }

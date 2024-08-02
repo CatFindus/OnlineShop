@@ -1,11 +1,13 @@
 package ru.puchinets.userservice.mapper;
 
 import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
+import ru.puchinets.userservice.mapper.helper.UserMapperHelper;
 import ru.puchinets.userservice.model.dto.request.UserRequest;
 import ru.puchinets.userservice.model.dto.response.UserResponse;
 import ru.puchinets.userservice.model.entity.User;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {UserMapperHelper.class}, unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface UserMapper {
     User dtoToEntity(UserRequest request);
 

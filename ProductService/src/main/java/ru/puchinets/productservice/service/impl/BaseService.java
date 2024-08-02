@@ -36,6 +36,7 @@ public abstract class BaseService<RQ, RS, T, ID> {
     public Optional<RS> update(ID id, RQ request) {
         return repository.findById(id)
                 .map(entity -> mapper.update(entity, request))
+                .map(repository::saveAndFlush)
                 .map(mapper::modelToDto);
     }
 

@@ -1,23 +1,46 @@
 package ru.puchinets.productservice.mapper;
 
+import lombok.RequiredArgsConstructor;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
 import ru.puchinets.productservice.model.dto.request.CategoryRequest;
 import ru.puchinets.productservice.model.dto.response.CategoryResponse;
+import ru.puchinets.productservice.model.dto.response.CategoryShortResponse;
 import ru.puchinets.productservice.model.entity.Category;
+import ru.puchinets.productservice.repository.CategoryRepository;
 
-@Mapper(componentModel = "spring")
-public interface CategoryMapper extends BaseMapper<CategoryRequest, CategoryResponse, Category> {
+import java.util.Optional;
+
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+public abstract class CategoryMapper implements BaseMapper<CategoryRequest, CategoryResponse, Category> {
+
+    @Autowired
+    private CategoryRepository repository;
+
     @Override
-    CategoryResponse modelToDto(Category entity);
+    public abstract CategoryResponse modelToDto(Category entity);
     @Override
-    Category dtoToModel(CategoryRequest request);
+    @Mapping(source = "parentId", target = "parent")
+    public abstract Category dtoToModel(CategoryRequest request);
+    public abstract CategoryShortResponse modelToShortDto(Category category);
+
     @Override
-    default Category update(Category entity, CategoryRequest request) {
+    public Category update(Category entity, CategoryRequest request) {
         if (request==null) return entity;
         if (request.getName()!=null && !request.getName().isBlank())
             entity.setName(request.getName());
         if (request.getDescription()!=null)
             entity.setDescription(request.getDescription());
+        if (request.getParentId()!=null)
+            entity.setParent(map(request.getParentId()));
         return entity;
+    }
+
+    protected Category map(Long value) {
+        if (value == null) return null;
+        Optional<Category> mayBeCategory = repository.findById(value);
+        return mayBeCategory.orElse(null);
     }
 }

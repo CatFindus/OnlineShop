@@ -5,17 +5,17 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/changelog.xml
-    url: ${DB_URL:jdbc:postgresql://localhost:9000/shop}
-    user: ${DB_USER:admin}
-    password: ${DB_PASS:online_shop}
+    url: jdbc:postgresql://localhost:9000/shop
+    user: admin
+    password: online_shop
     enabled: true
     default-schema: product_management
     liquibase-schema: product_management_migrations
 
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:9000/shop}
-    username: ${DB_USER:admin}
-    password: ${DB_PASS:online_shop}
+    url: jdbc:postgresql://localhost:9000/shop
+    username: admin
+    password: online_shop
 
   jpa:
     show-sql: true
@@ -23,14 +23,14 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        default_schema: ${spring.liquibase.default-schema}
+        default_schema: ${spring.liquibase.liquibase-schema}
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 logging:
   level:
     root: info
-    ru.puchinets.productservice.controller.rest: trace
-    ru.puchinets.productservice.service.impl: trace
+    ru.puchinets.userservice.controller.rest: trace
+    ru.puchinets.userservice.service.impl: trace
   file:
     name: product-service.log
     path: /logs/product-service/

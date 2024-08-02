@@ -7,6 +7,7 @@ import ru.puchinets.userservice.model.entity.Role;
 
 @Mapper(componentModel = "spring")
 public interface RoleMapper {
+
     Role dtoToEntity(RoleRequest request);
 
     RoleResponse entityToDto(Role entity);

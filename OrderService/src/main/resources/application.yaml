@@ -29,8 +29,8 @@ spring:
 logging:
   level:
     root: info
-    ru.puchinets.productservice.controller.rest: trace
-    ru.puchinets.productservice.service.impl: trace
+    ru.puchinets.orderservice.controller.rest: trace
+    ru.puchinets.orderservice.service.impl: trace
   file:
     name: order-service.log
     path: /logs/order-service/

@@ -15,4 +15,6 @@ public class Constants {
     public static final String PRODUCT_NOT_FOUND="Product was not found by ID";
     public static final String PRODUCT_HAS_NOT_IN_STOCK="In stock has not quantity product to add in order";
     public static final String INCORRECT_COMMAND = "Received incorrect command";
+    //Swagger examples
+    public static final String PAGINATION_EXAMPLE="{\n\"page\": 0,\n\"size\": 2,\n\"sort\": \"id,desc\"\n}";
 }

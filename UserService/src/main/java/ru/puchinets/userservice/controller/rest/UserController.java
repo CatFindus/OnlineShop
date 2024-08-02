@@ -9,6 +9,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +20,9 @@ import ru.puchinets.userservice.model.entity.User;
 import ru.puchinets.userservice.service.UserService;
 
 import java.util.Optional;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
+import static ru.puchinets.userservice.Constants.PAGINATION_EXAMPLE;
 
 @RequiredArgsConstructor
 @RestController
@@ -41,7 +46,9 @@ public class UserController {
 
     @GetMapping
     @Operation(summary = "Retrieve a paginated list of all users")
-    public ResponseEntity<Page<UserResponse>> getAllUsers(@Parameter(description = "Pagination and sorting parameters") Pageable pageable) {
+    public ResponseEntity<Page<UserResponse>> getAllUsers(@Parameter(name = "pagination parameter",
+            description = "Pagination and sorting parameters", example = PAGINATION_EXAMPLE)
+                                                          @PageableDefault(sort = "id", direction = ASC) Pageable pageable) {
         return ResponseEntity.ok(userService.getAll(pageable));
     }
 
@@ -59,7 +66,7 @@ public class UserController {
     @Operation(summary = "Register new user", description = "Register a new user and return the user data")
     @ApiResponse(responseCode = "201", description = "User created",
             content = @Content(schema = @Schema(implementation = UserResponse.class)))
-    public ResponseEntity<UserResponse> register(@Parameter(description = "Fields of new user") @RequestBody UserRequest request) {
+    public ResponseEntity<UserResponse> register(@RequestBody UserRequest request) {
         UserResponse savedUser = userService.registerUser(request);
         return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
     }
@@ -70,7 +77,7 @@ public class UserController {
             content = @Content(schema = @Schema(implementation = UserResponse.class)))
     @ApiResponse(responseCode = "404", description = "User not found")
     public ResponseEntity<UserResponse> updateUser(@Parameter(description = "ID of the user to update") @PathVariable("id") Long id,
-                                                   @Parameter(description = "User data for update") @RequestBody UserRequest request) {
+                                                   @RequestBody UserRequest request) {
         var updatedUser = userService.update(id, request);
         return updatedUser.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
@@ -83,5 +90,19 @@ public class UserController {
         boolean deleted = userService.delete(id);
         if (deleted) return ResponseEntity.noContent().build();
         else return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("{userId}/role/{roleId}")
+    public ResponseEntity<UserResponse> addRoleToUser(@PathVariable("userId") Long userId,
+                                                      @PathVariable("roleId") Integer roleId) {
+        Optional<UserResponse> response = userService.addRoleToUser(userId, roleId);
+        return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("{userId}/role/{roleId}")
+    public ResponseEntity<UserResponse> replaceRoleFromUser(@PathVariable("userId") Long userId,
+                                                            @PathVariable("roleId") Integer roleId) {
+        Optional<UserResponse> response = userService.replaceRoleFormUser(userId, roleId);
+        return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 }

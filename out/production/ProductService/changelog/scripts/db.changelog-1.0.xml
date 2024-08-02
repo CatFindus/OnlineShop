@@ -44,10 +44,10 @@
     <changeSet id="3" author="apuchinec">
         <createTable tableName="user_roles" schemaName="user_management">
             <column name="user_id" type="bigint">
-                <constraints foreignKeyName="fk_user_id" referencedTableName="users" referencedColumnNames="id" deleteCascade="true"/>
+                <constraints foreignKeyName="fk_user_id" referencedTableName="users" referencedColumnNames="id"/>
             </column>
             <column name="role_id" type="int">
-                <constraints foreignKeyName="fk_role_id" referencedTableName="roles" referencedColumnNames="id" deleteCascade="true"/>
+                <constraints foreignKeyName="fk_role_id" referencedTableName="roles" referencedColumnNames="id"/>
             </column>
         </createTable>
         <addPrimaryKey tableName="user_roles"

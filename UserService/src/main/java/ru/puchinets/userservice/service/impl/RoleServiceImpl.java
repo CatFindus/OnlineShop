@@ -39,6 +39,7 @@ public class RoleServiceImpl implements RoleService {
     public Optional<RoleResponse> update(Integer id, RoleRequest request) {
         var mayBeRole = repository.findById(id);
         return mayBeRole.map(role -> mapper.update(role, request))
+                .map(repository::saveAndFlush)
                 .map(mapper::entityToDto);
     }
 

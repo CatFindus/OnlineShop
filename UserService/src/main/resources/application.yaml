@@ -5,17 +5,17 @@ spring:
 
   liquibase:
     change-log: classpath:db/changelog/changelog.xml
-    url: jdbc:postgresql://localhost:9000/shop
-    user: admin
-    password: online_shop
+    url: ${DB_URL:jdbc:postgresql://localhost:9000/shop}
+    user: ${DB_USER:admin}
+    password: ${DB_PASS:online_shop}
     enabled: true
     default-schema: user_management
     liquibase-schema: user_management_migrations
 
   datasource:
-    url: jdbc:postgresql://localhost:9000/shop
-    username: admin
-    password: online_shop
+    url: ${DB_URL:jdbc:postgresql://localhost:9000/shop}
+    username: ${DB_USER:admin}
+    password: ${DB_PASS:online_shop}
 
   jpa:
     show-sql: true
@@ -23,7 +23,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        default_schema: ${spring.liquibase.liquibase-schema}
+        default_schema: ${spring.liquibase.default-schema}
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 logging:

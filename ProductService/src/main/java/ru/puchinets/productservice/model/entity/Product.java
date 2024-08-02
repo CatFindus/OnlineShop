@@ -3,10 +3,13 @@ package ru.puchinets.productservice.model.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import java.math.BigDecimal;
 
+@EqualsAndHashCode(of = "id", callSuper = false)
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
