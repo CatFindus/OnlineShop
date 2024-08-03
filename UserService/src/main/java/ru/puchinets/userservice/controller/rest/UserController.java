@@ -92,15 +92,27 @@ public class UserController {
         else return ResponseEntity.notFound().build();
     }
 
+    @Operation(summary = "Add role to user", description = "Add role to user by userId and roleId")
+    @ApiResponse(responseCode = "200", description = "Role added to user if user not contains role",
+            content = @Content(schema = @Schema(implementation = UserResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Role or user not found")
     @PostMapping("{userId}/role/{roleId}")
-    public ResponseEntity<UserResponse> addRoleToUser(@PathVariable("userId") Long userId,
+    public ResponseEntity<UserResponse> addRoleToUser(@Parameter(description = "ID of the user")
+                                                      @PathVariable("userId") Long userId,
+                                                      @Parameter(description = "ID of the role")
                                                       @PathVariable("roleId") Integer roleId) {
         Optional<UserResponse> response = userService.addRoleToUser(userId, roleId);
         return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
     }
 
+    @Operation(summary = "Replace role to user", description = "Replace role to user by userId and roleId")
+    @ApiResponse(responseCode = "200", description = "Role replaced from user if user contains role",
+            content = @Content(schema = @Schema(implementation = UserResponse.class)))
+    @ApiResponse(responseCode = "404", description = "Role or user not found")
     @DeleteMapping("{userId}/role/{roleId}")
-    public ResponseEntity<UserResponse> replaceRoleFromUser(@PathVariable("userId") Long userId,
+    public ResponseEntity<UserResponse> replaceRoleFromUser(@Parameter(description = "ID of the user")
+                                                            @PathVariable("userId") Long userId,
+                                                            @Parameter(description = "ID of the role")
                                                             @PathVariable("roleId") Integer roleId) {
         Optional<UserResponse> response = userService.replaceRoleFormUser(userId, roleId);
         return response.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
