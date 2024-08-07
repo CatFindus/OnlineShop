@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create_table_orders" author="apuchinec">
+        <createTable tableName="orders" schemaName="order_management">
+            <column autoIncrement="true" name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints foreignKeyName="fk_users_id"
+                             referencedTableSchemaName="user_management"
+                             referencedTableName="users"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+            <column name="status_id" type="bigint">
+                <constraints foreignKeyName="fk_order_statuses_id"
+                             referencedTableSchemaName="order_management"
+                             referencedTableName="order_statuses"
+                             referencedColumnNames="id"
+                             nullable="false"/>
+            </column>
+            <column name="total_price" type="decimal(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="create_table_order_items" author="apuchinec">        
+        <createTable tableName="order_items" schemaName="order_management">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_order_id"
+                             referencedTableSchemaName="order_management"
+                             referencedTableName="orders"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="product_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_product_id"
+                             referencedTableSchemaName="product_management"
+                             referencedTableName="products"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="quantity" type="int">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price"  type="decimal(19,2)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="create_table_payments" author="apuchinec">
+        <createTable tableName="payments" schemaName="order_management">
+            <column name="id" type="bigint">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="order_id" type="bigint">
+                <constraints nullable="false"
+                             foreignKeyName="fk_order_id"
+                             referencedTableSchemaName="order_management"
+                             referencedTableName="orders"
+                             referencedColumnNames="id"/>
+            </column>
+            <column name="amount" type="decimal(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_status" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_date" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp"/>
+            <column name="updated_at" type="timestamp"/>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

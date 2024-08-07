@@ -1,16 +1,18 @@
 package ru.puchinets.userservice.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@EqualsAndHashCode(of = "name", callSuper = false)
 @Table(name = "roles", schema = "user_management")
-public class Role {
+public class Role extends BaseEntity {
     @Id
     @SequenceGenerator(name = "role_seq", allocationSize = 1, sequenceName = "roles_id_seq", schema = "user_management")
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq")
@@ -19,4 +21,7 @@ public class Role {
     private String name;
     @Column(name = "description")
     private String description;
+    @ManyToMany(mappedBy = "roles")
+    @ToString.Exclude
+    private List<User> users = new ArrayList<>();
 }
