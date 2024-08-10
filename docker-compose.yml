@@ -22,6 +22,35 @@ services:
       - "8001:8001"
     image: redis/redis-stack
 
+  mongo_db:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: online_shop
+    volumes:
+      - D:\pg\mongo:/data/db
+
+  mongoexpress:
+    image: mongo-express:1.0.2
+    depends_on:
+      - mongo_db
+    restart: "no"
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: online_shop
+      ME_CONFIG_MONGODB_URL: mongodb://admin:online_shop@mongo_db:27017/
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://localhost:8081/status || exit -1
+      interval: 10s
+      timeout: 5s
+      start_period: 60s
+      retries: 5
+
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -36,6 +65,7 @@ services:
       - zookeeper
     ports:
       - "9092:9092"
+      - "9093:9093"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -44,7 +74,26 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9092,OUTSIDE://0.0.0.0:9093
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
-      KAFKA_CREATE_TOPICS: "order-created:1:1"
+
+  init-kafka:
+    image: confluentinc/cp-kafka:latest
+    depends_on:
+      - kafka
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: |
+      "
+      # blocks until kafka is reachable
+      kafka-topics --bootstrap-server kafka:9092 --list
+      
+      echo -e 'Creating kafka topics'
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic order-changed --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic user-updated --replication-factor 1 --partitions 1
+      kafka-topics --bootstrap-server kafka:9092 --create --if-not-exists --topic statistics --replication-factor 1 --partitions 1
+      
+      echo -e 'Successfully created the following topics:'
+      kafka-topics --bootstrap-server kafka:9092 --list
+      "
+
 
   kafdrop:
     image: obsidiandynamics/kafdrop

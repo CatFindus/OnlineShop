@@ -18,8 +18,8 @@ import java.util.List;
 @Table(name = "orders", schema = "order_management")
 public class Order extends BaseEntity {
     @Id
-    @SequenceGenerator(name = "order_seq", sequenceName = "order_id_seq", schema = "order_management")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "order_seq")
+    @SequenceGenerator(name = "orders_seq", sequenceName = "orders_id_seq", schema = "order_management", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "orders_seq")
     private Long id;
     @Column(name = "user_id")
     private Long userId;

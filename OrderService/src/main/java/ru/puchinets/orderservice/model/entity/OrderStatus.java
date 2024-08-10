@@ -1,10 +1,7 @@
 package ru.puchinets.orderservice.model.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -20,17 +17,8 @@ public class OrderStatus implements Serializable {
     private Short id;
     private String name;
     private String description;
-    @OneToOne
-    @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "next_status_id")
-    private OrderStatus nextStatus;
-    @OneToOne
-    @EqualsAndHashCode.Exclude
-    @JoinColumn(name = "previous_status_id")
-    private OrderStatus previousStatus;
-
-    @OneToMany
-    @EqualsAndHashCode.Exclude
-    private Set<Order> orders;
-
+    @Column(name = "next_status_id")
+    private Short nextStatusId;
+    @Column(name = "previous_status_id")
+    private Short previousStatusId;
 }

@@ -18,7 +18,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 
     @Override
     public OrderStatus getFirstOrderStatus() {
-        return repository.findByPreviousStatusIsNull();
+        return repository.findByPreviousStatusIdIsNull();
     }
 
     @Override
@@ -28,16 +28,14 @@ public class OrderStatusServiceImpl implements OrderStatusService {
 
     @Override
     public OrderStatus getNextOrderStatus(Short orderStatusId) {
-        return repository.findById(orderStatusId)
-                .orElseThrow(() -> new IllegalArgumentException("Status with id " + orderStatusId + " not found"))
-                .getNextStatus();
+        return repository.findByPreviousStatusId(orderStatusId)
+                .orElseThrow(() -> new IllegalArgumentException("Status with id " + orderStatusId + " not found"));
     }
 
     @Override
     public OrderStatus getPrevousOrderStatus(Short orderStatusId) {
-        return repository.findById(orderStatusId)
-                .orElseThrow(() -> new IllegalArgumentException("Status with id " + orderStatusId + " not found"))
-                .getPreviousStatus();
+        return repository.findByNextStatusId(orderStatusId)
+                .orElseThrow(() -> new IllegalArgumentException("Status with id " + orderStatusId + " not found"));
     }
 
 

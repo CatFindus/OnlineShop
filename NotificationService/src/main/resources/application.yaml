@@ -1,0 +1,27 @@
+#BOT_TOKEN: your_telegram_bot_token
+spring:
+  application:
+    name: notification-service
+  data:
+    mongodb:
+      uri: mongodb://admin:online_shop@localhost:27017/online-shop?authSource=admin
+  config:
+    import: optional:file:C:\Users\79213\IdeaProjects\OnlineShop\secret.properties
+server:
+  port: 9005
+springdoc:
+  swagger-ui:
+    path: /swagger/swagger-ui.html
+mail:
+  host: smtp.yandex.ru
+  port: 465
+#  username: your_yandex_mail_username
+#  password: your_yandex_mail_pasword
+  protocol: smtps
+  tls: true
+  auth: true
+sms:
+#  token: your-token
+  url:  https://api.mts.ru/client-omni-adapter_production/1.0.2/mcom/messageManagement/messages
+#  naming: your-naming
+  active: false
