@@ -1,12 +1,15 @@
 package ru.puchinets.userservice.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.puchinets.userservice.Constants;
+import ru.puchinets.userservice.events.UserUpdatedEvent;
 import ru.puchinets.userservice.mapper.UserMapper;
+import ru.puchinets.userservice.model.command.UserUpdate;
 import ru.puchinets.userservice.model.dto.request.UserRequest;
 import ru.puchinets.userservice.model.dto.response.UserResponse;
 import ru.puchinets.userservice.model.entity.Role;
@@ -18,6 +21,8 @@ import ru.puchinets.userservice.service.UserService;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static ru.puchinets.userservice.enums.UserUpdateCommandType.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -25,6 +30,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserMapper mapper;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public Optional<UserResponse> getUserById(Long id) {
@@ -59,6 +65,14 @@ public class UserServiceImpl implements UserService {
         Optional<Role> mayBeRole = roleRepository.findByName(Constants.DEFAULT_ROLE);
         mayBeRole.ifPresent(user::addRole);
         user = userRepository.saveAndFlush(user);
+
+        publisher.publishEvent(new UserUpdatedEvent(UserUpdate
+                .builder()
+                .userId(user.getId())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .type(CREATE)
+                .build()));
         return mapper.entityToDto(user);
     }
 
@@ -70,6 +84,13 @@ public class UserServiceImpl implements UserService {
                 .map(user -> {
                     User updated = mapper.update(user, request);
                     userRepository.saveAndFlush(updated);
+                    publisher.publishEvent(new UserUpdatedEvent(UserUpdate
+                            .builder()
+                            .userId(user.getId())
+                            .email(user.getEmail())
+                            .phone(user.getPhone())
+                            .type(UPDATE)
+                            .build()));
                     return updated;
                 })
                 .map(mapper::entityToDto);
@@ -79,7 +100,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean delete(Long id) {
         var mayBeUser = userRepository.findById(id);
-        mayBeUser.ifPresent(userRepository::delete);
+        mayBeUser.ifPresent(entity -> {
+            userRepository.delete(entity);
+            publisher.publishEvent(new UserUpdatedEvent(UserUpdate
+                    .builder()
+                    .userId(id)
+                    .type(DELETE)
+                    .build()));
+        });
+
         return mayBeUser.isPresent();
     }
 

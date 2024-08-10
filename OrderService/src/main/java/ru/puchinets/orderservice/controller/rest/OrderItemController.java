@@ -9,11 +9,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.puchinets.orderservice.model.dto.request.OrderItemRequest;
 import ru.puchinets.orderservice.model.dto.response.OrderItemResponse;
 import ru.puchinets.orderservice.service.OrderItemService;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 @RestController
 @RequestMapping("/api/orders/{orderId}/items")
@@ -52,8 +55,10 @@ public class OrderItemController {
     @Operation(summary = "Find all order items", description = "Find all order items with pagination")
     @ApiResponse(responseCode = "200", description = "Items found successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderItemResponse.class)))
-    public ResponseEntity<Page<OrderItemResponse>> getAllItemsByOrderId(@Parameter(description = "Pagination parameters")
-                                                                        @PathVariable("orderId") Long orderId, @RequestBody Pageable pageable) {
+    public ResponseEntity<Page<OrderItemResponse>> getAllItemsByOrderId(@Parameter(description = "ID of order")
+                                                                        @PathVariable("orderId") Long orderId,
+                                                                        @Parameter(description = "Pagination parameters")
+                                                                        @PageableDefault(sort = "id", direction = ASC) Pageable pageable) {
         return ResponseEntity.ok(service.findAllByOrderId(orderId, pageable));
     }
 

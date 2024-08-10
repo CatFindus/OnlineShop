@@ -9,12 +9,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.puchinets.orderservice.model.dto.request.OrderRequest;
 import ru.puchinets.orderservice.model.dto.response.OrderResponse;
 import ru.puchinets.orderservice.service.OrderService;
+
+import static org.springframework.data.domain.Sort.Direction.ASC;
 
 @RestController
 @RequiredArgsConstructor
@@ -75,7 +78,7 @@ public class OrderController {
     @ApiResponse(responseCode = "200", description = "Orders found successfully",
             content = @Content(mediaType = "application/json", schema = @Schema(implementation = OrderResponse.class)))
     public ResponseEntity<Page<OrderResponse>> getAllOrders(@Parameter(description = "Pagination parameters")
-                                                            @RequestBody Pageable pageable) {
+                                                            @PageableDefault(sort = "id", direction = ASC) Pageable pageable) {
         return ResponseEntity.ok(orderService.getAll(pageable));
     }
 
